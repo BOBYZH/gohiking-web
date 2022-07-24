@@ -1,38 +1,41 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, {  useState, useEffect } from "react";
 import {
   makeStyles,
-  createMuiTheme,
   ThemeProvider,
 } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
-
-import axios from "axios";
-import TrailList from "../../components/Lists/TrailList";
-import BackArrow from "../../components/TopBar/BackArrow";
+import {  Grid, GridList } from "@material-ui/core";
+import TrailCard from "../../components/Lists/TrailCard";
 import { Link } from "react-router-dom";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FavoriteIcon from "@material-ui/icons/Favorite";
-
 import ShareIcon from "@material-ui/icons/Share";
+import demoapi from "../../axios/api"; //引入api
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: "100%",
     fontFamily: "NotoSansCJKtc",
   },
+
   backArrow: {
     position: "absolute",
     top: "0",
     left: "0",
-    color:"#fff",
+    margin:"5px",
     display: "block",
     width: "40px",
     height: "40px",
+   
+  },
+  link:{
+    color:"#ffffff",
   },
   favoriteIcon: {
     width: "40px",
     height: "40px",
     position: "absolute",
     top: "0",
+    margin:"5px",
     right: "20%",
     display: "block",
     color: "#ffffff",
@@ -43,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: "0",
     right: "0",
+    margin:"5px",
     display: "block",
     color: "#ffffff",
   },
@@ -57,9 +61,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     height: "36px",
     textIndent: "5%",
-    fontSize: "22px",
+    fontSize: "20px",
     fontWeight: "bold",
-    lineHeight: "1.64",
+    lineHeight: "1.5",
     letterSpacing: "0.46px",
 
     color: "#232323",
@@ -95,22 +99,13 @@ const useStyles = makeStyles((theme) => ({
     margin: "1px 32px 2px 0",
     objectFit: "contain",
   },
-}));
+  back:{
+    textDecoration:"none",
+    color:"#0000FF",
+  },
+ 
 
-const api = axios.create({
-  //heroku
-  baseURL: "https://go-hiking-backend-laravel.herokuapp.com/",
-  headers: {
-    "X-Secure-Code": "12345678",
-  },
-});
-const demoapi = axios.create({
-  //測試 api
-  baseURL: "http://09da54f0b81b.ngrok.io",
-  headers: {
-    "X-Secure-Code": "12345678",
-  },
-});
+}));
 
 function Column(props) {
   const classes = useStyles();
@@ -119,35 +114,61 @@ function Column(props) {
   const id = props.match.params.id;
 
   console.log(id);
+  var uid = 0;
+  if(localStorage.getItem('userId')){
+     uid= localStorage.getItem('userId'); //取得localstorage ussrId
+   }else{
+     uid = null;  //取不到user Id
+   }
 
   const articleApi = async (id) => {
     //搜尋文章頁面api
-    await demoapi.get("/api/article/" + id).then((res) => {
+    await demoapi.get("/api/article/" + id + "?uuid="+uid).then((res) => {
       setArticle(res.data);
       setTrail(res.data.trails);
     });
   };
-
+ const handleShare = () => {
+            if (navigator.share) {
+                console.log("Congrats! Your browser supports Web Share API");
+                navigator
+                    .share({
+                        url: `https://share.toogoodtogo.com/store/1006/milestones/meals-saved/`
+                    })
+                    .then(() => {
+                        console.log("Sharing successfull");
+                    })
+                    .catch(() => {
+                        console.log("Sharing failed");
+                    }); 
+            } else {
+                console.log("Sorry! Your browser does not support Web Share API");
+            }
+        };
   useEffect(() => {
     articleApi(id);
   }, [id]);
   console.log(article);
+
+  localStorage.setItem("previous_pathname", "/columnPage/" + id);
+
   return (
     <>
       <div className={classes.root}>
         <ThemeProvider>
           <img src={article.image} className={classes.Img} />
 
-          <Grid item xs={12} >
-            <Link to="/home" className={classes.backArrow} >
-              <BackArrow />
-            </Link>
+          <Grid item xs={12} className={classes.backArrow}>
+          <Link to="/home" className={classes.link}> 
+          <ArrowBackIcon />
+          </Link>
+        
           </Grid>
           <Grid className={classes.favoriteIcon}>
             <FavoriteIcon />
           </Grid>
           <Grid className={classes.shareIcon}>
-            <ShareIcon />
+            <ShareIcon  onClick={handleShare} />
           </Grid>
           <div className={classes.title}>{article.title}</div>
           <Grid item xs={12}>
@@ -160,8 +181,11 @@ function Column(props) {
           <Grid item xs={12} container>
             <div className={classes.textlist}>步道推薦</div>
             <div className={classes.trailList}>
-              {/* 步道list component */}
-              <TrailList data={trail} />
+              <GridList cellHeight={72} cols={1}>
+                {trail.map((trail) => (
+                  <TrailCard data={trail} />
+                ))}
+              </GridList>
             </div>
           </Grid>
         </ThemeProvider>

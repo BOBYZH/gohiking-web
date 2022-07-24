@@ -55,7 +55,7 @@ $font-family: NotoSansCJKtc;
     padding-right: 16px;
   }
 
-  &__btns /deep/ {
+  &__btns >>> {
     .showDisplaymMoreBtn {
       display: flex;
       justify-content: center;
@@ -95,7 +95,7 @@ $font-family: NotoSansCJKtc;
 }
 
 .btn {
-  &-gray /deep/ {
+  &-gray >>> {
     .MuiButton {
       &-root {
         @include muiButton-root;
@@ -129,7 +129,7 @@ $font-family: NotoSansCJKtc;
     }
   }
 
-  &-outline-success /deep/ {
+  &-outline-success >>> {
     .MuiButton {
       &-root {
         @include muiButton-root;
@@ -154,7 +154,7 @@ $font-family: NotoSansCJKtc;
     }
   }
 
-  &-success /deep/ {
+  &-success >>> {
     .MuiButton {
       &-root {
         @include muiButton-root;
@@ -180,7 +180,7 @@ $font-family: NotoSansCJKtc;
   }
 }
 
-.slider /deep/ {
+.slider >>> {
   margin: 8px 0px 0px 0px;
 
   .MuiSlider {
@@ -223,7 +223,7 @@ $font-family: NotoSansCJKtc;
   }
 }
 
-// #root /deep/ {
+// #root >>> {
 //   .MuiDrawer-paper {
 //     overflow-y: overlay !important;
 //     background: #000;
@@ -233,4 +233,12 @@ $font-family: NotoSansCJKtc;
 hr {
   margin: 0;
   border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.page >>>{
+  .MuiDrawer-paper{
+    overflow-y: scroll
+  }
+  ::-webkit-scrollbar {
+    display: none; /* Chrome Safari */
+  }
 }

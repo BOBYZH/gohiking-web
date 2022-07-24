@@ -28,7 +28,7 @@ const config = {
     defaultIsRTL: false //change this to true for Right to Left Language support
   },
   pages: {
-    LandingPage: lazy(() => import('../pages/LandingPage/LandingPage')),
+    LandingPage: lazy(() => import('../pages/HikingFrontend/SignIn')),
     PageNotFound: lazy(() => import('../pages/PageNotFound/PageNotFound')),
   },
 }

@@ -1,11 +1,11 @@
-import axios from "axios";
-import React, { Fragment, useState, useEffect } from "react";
-
-const api = axios.create({
-  baseURL: "http://4b4619ff6741.ngrok.io"
-});
+import demoapi from "axios/api";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router";
+import moment from "moment";
+import setDate from "date-fns/setDate";
 
 const PersonalPageLogic = (info = null) => {
+  const history = useHistory();
   const [isLoading, setisLoading] = useState(info ? false : true);
   const [personalInfo, setpersonalInfo] = useState(info ? info : {});
   const [nameValidation, setnameValidation] = useState("");
@@ -15,20 +15,28 @@ const PersonalPageLogic = (info = null) => {
   const [countyValidation, setcountyValidation] = useState("");
 
   useEffect(() => {
-    if (!info) getPersonalInfo(1);
+    if (!info) getPersonalInfo();
   }, [info]);
-  const getPersonalInfo = async id => {
-    console.log("getting");
-    await api.get("/api/user/" + id).then(res => {
+  const getPersonalInfo = async () => {
+    let uid = 0;
+    if (localStorage.getItem("userId")) {
+      uid = localStorage.getItem("userId");
+    } else {
+      history.push({ pathname: "/signin" });
+    }
+    await demoapi.get("/api/user/" + uid).then(res => {
       setisLoading(false);
-      res.data.gender = res.data.gender ? "男" : "女";
+      console.log(res.data.users.name);
       setpersonalInfo(res.data);
     });
   };
 
   const handleNameChange = event => {
     const value = event.target.value;
-    setpersonalInfo({ ...personalInfo, name: value });
+    setpersonalInfo({
+      ...personalInfo,
+      users: { ...personalInfo.users, name: value }
+    });
     if (value == "") {
       setnameValidation("姓名不可為空");
     } else {
@@ -38,7 +46,10 @@ const PersonalPageLogic = (info = null) => {
 
   const handleSexChange = event => {
     const value = event.target.value;
-    setpersonalInfo({ ...personalInfo, gender: value });
+    setpersonalInfo({
+      ...personalInfo,
+      users: { ...personalInfo.users, gender: value }
+    });
     if (value == "男" || value == "女") {
       setgenderValidation("");
     } else {
@@ -48,7 +59,10 @@ const PersonalPageLogic = (info = null) => {
 
   const handleTelChange = event => {
     const value = event.target.value;
-    setpersonalInfo({ ...personalInfo, phone_number: value });
+    setpersonalInfo({
+      ...personalInfo,
+      users: { ...personalInfo.users, phone_number: value }
+    });
     let reg = new RegExp(/^\d*$/).test(value);
     if (reg) {
       setphoneValidation("");
@@ -56,15 +70,29 @@ const PersonalPageLogic = (info = null) => {
       setphoneValidation("只允許數字");
     }
   };
-  const handleBirthChange = event => {
-    setpersonalInfo({ ...personalInfo, birth: event.target.value });
+  const handleBirthChange = date => {
+    const value = date;
+    setpersonalInfo({
+      ...personalInfo,
+      users: { ...personalInfo.users, birth: value }
+    });
+    if (!moment(date).isValid()) {
+      setbirthValidation("請輸入正確格式日期");
+    } else if (value > moment()) {
+      setbirthValidation("請勿輸入未來日期");
+    } else {
+      setbirthValidation("");
+    }
   };
 
   const handleCountyChange = event => {
     const value = event.target.value;
     setpersonalInfo({
       ...personalInfo,
-      county: { ...personalInfo.county, name: value }
+      users: {
+        ...personalInfo.users,
+        county: { ...personalInfo.users.county, name: value }
+      }
     });
   };
   const getBase64 = file => {
@@ -76,9 +104,14 @@ const PersonalPageLogic = (info = null) => {
     });
   };
 
-  const updateInfo = async (id, data) => {
+  const updateInfo = async data => {
     setisLoading(true);
-    console.log(data);
+    let uid = 0;
+    if (localStorage.getItem("userId")) {
+      uid = localStorage.getItem("userId");
+    } else {
+      history.push({ pathname: "/signin" });
+    }
     if (data.croppedImage) {
       let blob = await fetch(data.croppedImage).then(r => r.blob());
       const file = new File([blob], "1234567890.jpg", {
@@ -86,33 +119,19 @@ const PersonalPageLogic = (info = null) => {
         type: "image/jpeg"
       });
       const b64 = await getBase64(file);
-      console.log(b64);
       data.croppedImage = b64;
-      // console.log(file);
-      // var fd = new FormData();
-      // fd.append("image", file);
-      // axios
-      //   .post("https://api.imgur.com/3/image", fd, {
-      //     headers: {
-      //       Authorization: "Client-ID 6bdc55894336124"
-      //     }
-      //   })
-      //   .then(res => {
-      //     console.log(res);
-      //   });
     }
-    return api
-      .put("/api/user/" + id, {
+    return demoapi
+      .put("/api/user/" + uid, {
         name: data.name,
         gender: data.gender,
         phone_number: data.phone_number,
-        birth: data.birth,
-        // profile_photo_url: data.croppedImage ? data.croppedImage : data.image,
-        image: "https://i.imgur.com/X7whEnq.jpg",
-        county: data.county
+        birth: moment(data.birth).format("YYYY-MM-DD"),
+        image: data.croppedImage ? data.croppedImage : "",
+        county: data.county,
+        country_code_id: data.countryCode
       })
       .then(res => {
-        console.log(res);
         return res.status;
       });
   };

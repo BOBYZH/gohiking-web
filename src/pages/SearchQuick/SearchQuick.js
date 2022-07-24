@@ -1,53 +1,72 @@
 import React, { Fragment, useState, useEffect } from "react";
+import AppBar from "@material-ui/core/AppBar";
+import { Toolbar, Typography,IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, CardActionArea } from "@material-ui/core";
 import axios from "axios";
-import QuickList from "../../components/Lists/QuickList";
+import TrailCard from "../../components/Lists/TrailCard";
 import BackArrow from "../../components/TopBar/BackArrow";
-import family from "../../asset/img/icon-family.png";
-import mapple from "../../asset/img/icon-mapple.png";
-import chellenge from "../../asset/img/icon-chellenge.png";
-import hotSpring from "../../asset/img/icon-hot-spring.png";
-import forest from "../../asset/img/icon-forest.png";
-import sakura from "../../asset/img/icon-sakura.png";
-import { Link } from "react-router-dom";
+import family from "../../asset/img/icon-family.svg";
+import  mapple from '../../asset/img/icon-mapple.svg';
+import chellenge from "../../asset/img/icon-chellenge.svg";
+import hotSpring from "../../asset/img/icon-hot-spring.svg";
+import forest from "../../asset/img/icon-forest.svg";
+import sakura from "../../asset/img/icon-sakura.svg";
+import demoapi from "axios/api";//引入api
+import { useHistory } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   mask: {
-    width: "100%",
-    height: "176px",
-    margin: "0 0 24px",
-    padding: "19px 0 0 16px",
+    boxShadow: "none",
     backgroundColor: "#ffeddc",
+    objectFit: "cover",
+    height: 176,
+    position: "relative",
+  },
+  collectionContent: {
+    marginTop: 61,
+    position: "relative",
+    padding: 8,
+    height: 120,
+    overflow: "hidden",
   },
   title: {
-    width: "100%",
-    height: "27px",
-    margin: "23px 183px 4px 0",
-    fontFamily: "NotoSansCJKtc",
-    fontSize: "18px",
+    color: "black",
+    fontSize: 16,
     fontWeight: "bold",
+    padding: 8,
+    lineHeight: 1.5,
+    letterSpacing: 0.5,
+    marginTop: "-1px",
   },
-  iconImg: {
-    position: "absolute",
-    right: 0,
+  descText: {
+    color: "black",
+    padding: 8,
+    lineHeight: 1.5,
+    letterSpacing: 0.5,
+    fontSize: 14,
   },
+
   list: {
     padding: "5%",
   },
-  backArrow:{
-    color:"#232323",
+  backArrow: {
+    color: "#232323",
+  },
+
+  iconImg: {
+    position: "absolute",
+    right: 0,
+    bottom: -40,
+    maxWidth: "132px",
+    height: "132px",
+    overflow: "hidden",
   },
 }));
 
-const api = axios.create({
-  baseURL: "https://go-hiking-backend-laravel.herokuapp.com/",
-  headers: {
-    "X-Secure-Code": "12345678",
-  },
-});
 
 const obj = {
   "mapple.png": mapple,
@@ -61,43 +80,73 @@ const obj = {
 function SearchQuick(props) {
   const classes = useStyles();
   const id = props.match.params.id;
+  let uid = localStorage.getItem("userId");
+  const history = useHistory();
   //搜尋結果hook
   const [searchQuick, setSearchQuick] = useState([]);
+  const [trail, setTrail] = useState([]);
 
-  const searchApi = async (id) => {
-    await api.get("/api/collection/" + id).then((res) => {
+  const trailApi = async (id) => {
+    await demoapi.get("/api/classification/" + id+"?uuid="+uid).then((res) => {
       setSearchQuick(res.data);
+      setTrail(res.data.trails);
     });
   };
   useEffect(() => {
-    searchApi(id);
+
+    trailApi(id);
   }, [id]);
+
+  localStorage.setItem("previous_pathname", "/SearchQuick/" + id)
 
   return (
     <>
       <div className={classes.root}>
-        <Grid item xs={12} className={classes.mask}>
-          <Grid > 
-            <Link to="/searchPage" className={classes.backArrow}> 
+        <AppBar className={classes.mask} position="static">
+          <Toolbar
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              
+            }}
+          >
+            <IconButton
+              edge="start"
+              className={classes.backArrow}
+              aria-label="back to previous page"
+              onClick={() => {
+                history.push({ pathname: '/searchPage' });
+              }}
+          
+            >
               <BackArrow />
-            </Link>
-          </Grid>
-
-          <div className={classes.title}>
-            <span className={classes.span}>{searchQuick.name}步道</span>
-          </div>
-          <span>老少咸宜，生活好去處。</span>
-          <CardActionArea>
+            </IconButton>
+          </Toolbar>
+       
+          <div className={classes.collectionContent}>
+            <Typography className={classes.title}>
+              {searchQuick.name}步道
+            </Typography>
+            <Typography className={classes.descText}>
+              老少咸宜，生活好去處。
+            </Typography>
             <img
-              src={obj[searchQuick.iconImage]}
+
+              src={ obj[searchQuick.image]}
+
               className={classes.iconImg}
-              alt={searchQuick.iconImg}
+              
             />
-          </CardActionArea>
-        </Grid>
+          </div>
+        </AppBar>
+
         <Grid className={classes.list}>
           {/* 步道list component */}
-          <QuickList data={searchQuick.trails} />
+          {trail.map(trail => (
+              <TrailCard data={trail} />
+            ))}
         </Grid>
       </div>
     </>

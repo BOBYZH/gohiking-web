@@ -9,17 +9,17 @@ import "./sidebar.scoped.scss";
 
 const useStyles = makeStyles({
   list: {
-    width: 250,
+    width: 250
   },
   fullList: {
-    width: "auto",
+    width: "auto"
   },
   iconButton: {
     padding: 0,
     minHeight: 0,
     minWidth: 0,
-    margin: 0,
-  },
+    margin: 0
+  }
 });
 const axios = window.axios;
 export default function Sidebar(props) {
@@ -45,64 +45,64 @@ export default function Sidebar(props) {
     { value: "7", title: "嘉義" },
     { value: "8", title: "台南" },
     { value: "9", title: "台東" },
-    { value: "10", title: "宜蘭" },
+    { value: "10", title: "宜蘭" }
   ]);
   const [marksOneChoose] = useState({
     defaultVal: 3,
     marks: [
       {
         value: 1,
-        label: "1",
+        label: "1"
       },
       {
         value: 2,
-        label: "2",
+        label: "2"
       },
       {
         value: 3,
-        label: "3",
+        label: "3"
       },
       {
         value: 4,
-        label: "4",
+        label: "4"
       },
       {
         value: 5,
-        label: "5",
-      },
-    ],
+        label: "5"
+      }
+    ]
   });
   const [marksTwoChoose] = useState({
     defaultVal: [0, 2000],
     marks: [
       {
         value: 0,
-        label: "",
+        label: ""
       },
       {
         value: 1000,
-        label: "1000",
+        label: "1000"
       },
       {
         value: 2000,
-        label: "2000",
+        label: "2000"
       },
       {
         value: 3000,
-        label: "3000",
+        label: "3000"
       },
       {
         value: 4000,
-        label: "",
-      },
-    ],
+        label: ""
+      }
+    ]
   });
   useEffect(() => {
     (async () => {
       const { data } = await axios.get("api/collection");
       console.log(data, 1);
       setThemeArray(
-        data.map((item) => {
+        data.map(item => {
           return { value: item.id, title: item.name };
         })
       );
@@ -111,7 +111,9 @@ export default function Sidebar(props) {
 
   const search = () => {
     //改成組成篩選url後回傳至SearchResult內的funtcion再做ajax
-    let filters = `/api/trail?filters=title:${kw},difficulty:${difficulty.value},evaluation:${evaluation},altitude1:${altitude1},altitude2:${altitude2}`;
+    let filters = `/api/trail?filters=title:${kw},difficulty:${
+      difficulty.value
+    },evaluation:${evaluation},altitude1:${altitude1},altitude2:${altitude2}`;
     county.title !== undefined
       ? (filters += `,county:${county.title}`)
       : (filters += "");
@@ -119,56 +121,63 @@ export default function Sidebar(props) {
       ? (filters += `,collection:${theme.value}`)
       : (filters += "");
     searchApi(filters);
+    //恢復預設值
+    setCounty(() => "");
+    setTheme(() => "");
+    setDifficulty({ value: 3, title: "覺得還好" });
+    setEvaluation(3);
+    setAltitude1(0);
+    setAltitude2(1000);
   };
 
-  const toggleDrawer = (open) => (event) => {
+  const toggleDrawer = open => event => {
     if (event.type === "keydown") return;
     setState(open);
   };
-  const getTheme = (theme) => {
+  const getTheme = theme => {
     if (theme === "") {
       setTheme("");
     } else {
-      setTheme(() => themeArray.find((item) => item.value === theme));
+      setTheme(() => themeArray.find(item => item.value === theme));
     }
   };
-  const changeDifficulty = (num) => {
+  const changeDifficulty = num => {
     switch (num) {
       case 1:
         setDifficulty({
           value: num,
-          title: "非常簡單",
+          title: "非常簡單"
         });
         break;
       case 2:
         setDifficulty({
           value: num,
-          title: "簡單",
+          title: "簡單"
         });
         break;
       case 3:
         setDifficulty({
           value: num,
-          title: "覺得還好",
+          title: "覺得還好"
         });
         break;
       case 4:
         setDifficulty({
           value: num,
-          title: "困難",
+          title: "困難"
         });
         break;
       case 5:
         setDifficulty({
           value: num,
-          title: "非常困難",
+          title: "非常困難"
         });
         break;
       default:
         break;
     }
   };
-  const changeEvaluation = (num) => {
+  const changeEvaluation = num => {
     switch (num) {
       case 1:
         setEvaluation(num);
@@ -189,15 +198,15 @@ export default function Sidebar(props) {
         break;
     }
   };
-  const changeAltitude = (numArray) => {
+  const changeAltitude = numArray => {
     setAltitude1(numArray[0]);
     setAltitude2(numArray[1]);
   };
-  const getCounty = (county) => {
+  const getCounty = county => {
     if (county === "") {
       setCounty("");
     } else {
-      setCounty(() => countiesArray.find((item) => item.value === county));
+      setCounty(() => countiesArray.find(item => item.value === county));
     }
   };
   const resetData = () => {
@@ -213,8 +222,8 @@ export default function Sidebar(props) {
         btns={themeArray}
         btns_num={4}
         reset={reset}
-        getChild={(theme) => getTheme(theme)}
-      ></Item>
+        getChild={theme => getTheme(theme)}
+      />
       <hr />
       <Item
         titleL="難易度"
@@ -225,18 +234,17 @@ export default function Sidebar(props) {
         }
         reset={reset}
         marks={marksOneChoose}
-        getChild={(num) => changeDifficulty(num)}
-      ></Item>
+        getChild={num => changeDifficulty(num)}
+      />
       <hr />
       <Item
         titleL="評價"
-        titleR={`${
-          evaluation || changeEvaluation(marksOneChoose.defaultVal)
-          }顆星`}
+        titleR={`${evaluation ||
+          changeEvaluation(marksOneChoose.defaultVal)}顆星`}
         reset={reset}
         marks={marksOneChoose}
-        getChild={(num) => changeEvaluation(num)}
-      ></Item>
+        getChild={num => changeEvaluation(num)}
+      />
       <hr />
       <Item
         titleL="海拔"
@@ -245,24 +253,24 @@ export default function Sidebar(props) {
     `}
         reset={reset}
         marks={marksTwoChoose}
-        getChild={(numArray) => changeAltitude(numArray)}
-      ></Item>
+        getChild={numArray => changeAltitude(numArray)}
+      />
       <hr />
       <Item
         titleL="縣市"
         btns={countiesArray}
         btns_num={6}
         reset={reset}
-        getChild={(county) => getCounty(county)}
-      ></Item>
+        getChild={county => getCounty(county)}
+      />
     </>
   );
   return (
     <>
       <IconButton className={classes.iconButton} onClick={toggleDrawer(true)}>
-        <TuneIcon style={{ color: "#00d04c" }}></TuneIcon>
+        <TuneIcon style={{ color: "#00d04c" }} />
       </IconButton>
-      <Drawer anchor={anchor} open={state} onClose={toggleDrawer(false)}>
+      <Drawer className="page" anchor={anchor} open={state} onClose={toggleDrawer(false)}>
         <div className={classes.list} role="presentation">
           <div className="sidebar">
             <div className="sidebar__header">
@@ -270,10 +278,10 @@ export default function Sidebar(props) {
             </div>
             <div className="sidebar__content">{content()}</div>
             <div className="sidebar__footer">
-              <span className="btn-success">
+              <span className="btn-outline-success">
                 <Button onClick={() => resetData()}>重設</Button>
               </span>
-              <span className="btn-outline-success">
+              <span className="btn-success">
                 <Button
                   onClick={() => {
                     search();

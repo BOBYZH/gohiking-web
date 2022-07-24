@@ -8,7 +8,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 function BackArrow(props) {
   
   return (
-    <ArrowBackIcon />
+    <ArrowBackIcon style={{color:"#000"}} />
   );
 }
 export default BackArrow;

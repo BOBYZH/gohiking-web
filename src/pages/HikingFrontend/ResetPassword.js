@@ -1,19 +1,15 @@
 import React, { useRef } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Page from 'material-ui-shell/lib/containers/Page';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input'
 import { useForm } from 'react-hook-form';
-import axios from "axios";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -119,16 +115,11 @@ export default function SignIn() {
   const [maxWidth] = React.useState('xs');
   const { register, handleSubmit, errors, watch } = useForm()
   const password = useRef({});
+  const history = useHistory();
   password.current = watch("password", "");
-  // const [password, setPassword] = React.useState(''); 
-  const [comfirm, setComfirm] = React.useState('');
-  const history = useHistory()
+  // const [comfirm, setComfirm] = React.useState('');
   const axios = require('axios');
   let responsedJSON;
-
-  function backhandleClick() {
-    history.push("/signin");
-  }
 
   //Open Dailog
   const handleClickOpen = () => {
@@ -137,6 +128,8 @@ export default function SignIn() {
 
   const handleClose = () => {
     setOpen(false);
+    history.push('/signin');
+
     // backhandleClick()
   };
   //get token from verify
@@ -192,7 +185,7 @@ export default function SignIn() {
           確認密碼
         </Typography>  
           <Input
-            onChange={event => setComfirm(event.target.value)}
+            // onChange={event => setComfirm(event.target.value)}
             className={classes.InputBackground}
             id="confirm"
             label="請重新輸入密碼 "

@@ -4,7 +4,6 @@ import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/style
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -13,9 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-
-import Icon from '@material-ui/core/Icon';
-import SvgIcon from '@material-ui/core/SvgIcon';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -28,12 +24,12 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/swiper.scss";
-import mapple from "../../asset/img/icon-mapple.png";
-import chellenge from "../../asset/img/icon-chellenge.png";
-import hotSpring from "../../asset/img/icon-hot-spring.png";
-import family from "../../asset/img/icon-family.png";
-import forest from "../../asset/img/icon-forest.png";
-import sakura from "../../asset/img/icon-sakura.png";
+import family from "../../asset/img/icon-family.svg";
+import  mapple from '../../asset/img/icon-mapple.svg';
+import chellenge from "../../asset/img/icon-chellenge.svg";
+import hotSpring from "../../asset/img/icon-hot-spring.svg";
+import forest from "../../asset/img/icon-forest.svg";
+import sakura from "../../asset/img/icon-sakura.svg";
 import { Link } from "react-router-dom";
 
 
@@ -203,32 +199,6 @@ const useStyles = makeStyles((theme)=> ({
       },
   }));
 
-  const iconTheme = createMuiTheme({
-    overrides: {
-      // Style sheet name ⚛️
-      MuiCardMedia: {
-        // Name of the rule
-        img: {
-          //Some CSS
-          height: '48px',
-          margin: '10px 0px',
-          objectFit: 'contain',
-        },
-        
-      },
-      MuiCardActionArea:{
-        root: {
-            width: '72px',
-            height: '96px',
-        }
-      },
-      MuiCardContent:{
-          root:{
-              padding: 0,
-          }
-      }
-    },
-  });
 
   const recommendTheme = createMuiTheme({
     overrides: {

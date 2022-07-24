@@ -17,7 +17,17 @@ export default function Item(props) {
     }
   }, [marks]);
 
-  const showBtns = (displaymMoreBtn) => {
+  const handleButtonClick = btn => {
+    if (btn.value === btnClick) {
+      setBtnClick(() => "");
+      props.getChild("");
+    } else {
+      setBtnClick(btn.value);
+      props.getChild(btn.value);
+    }
+  };
+
+  const showBtns = displaymMoreBtn => {
     if (displaymMoreBtn !== null && displaymMoreBtn !== isDisplaymMoreBtn)
       setIsDisplaymMoreBtn(displaymMoreBtn);
     return (
@@ -25,32 +35,31 @@ export default function Item(props) {
         {btns.map((btn, index) => {
           return (
             <>
-              {
-                (!isDisplaymMoreBtn || index + 1 <= btns_num) ?
-                  <sapn className="btn-gray">
-                    <Button
-                      variant="contained"
-                      className={
-                        reset
-                          ? resetBtn()
-                          : btnClick === btn.value
-                            ? "MuiButton-active"
-                            : ""
-                      }
-                      disableElevation
-                      onClick={async () => {
-                        setBtnClick(btn.value);
-                        props.getChild(btn.value);
-                      }}
-                      key={btn.value}
-                    >
-                      {btn.title}
-                    </Button>
-                  </sapn>
-                  : ""
-              }
+              {!isDisplaymMoreBtn || index + 1 <= btns_num ? (
+                <sapn className="btn-gray">
+                  <Button
+                    variant="contained"
+                    className={
+                      reset
+                        ? resetBtn()
+                        : btnClick === btn.value
+                        ? "MuiButton-active"
+                        : ""
+                    }
+                    disableElevation
+                    onClick={async () => {
+                      handleButtonClick(btn);
+                    }}
+                    key={btn.value}
+                  >
+                    {btn.title}
+                  </Button>
+                </sapn>
+              ) : (
+                ""
+              )}
             </>
-          )
+          );
         })}
         {showDisplaymMoreBtn()}
       </>
@@ -69,7 +78,7 @@ export default function Item(props) {
       {isDisplaymMoreBtn ? "顯示更多" : "顯示較少"}
     </div>
   );
-  const showSlider = (marks) => (
+  const showSlider = marks => (
     <div className="slider">
       <Slider
         step={null}
@@ -91,7 +100,7 @@ export default function Item(props) {
       props.getChild("");
     }
   };
-  const resetSlider = (marks) => {
+  const resetSlider = marks => {
     if (sliderNum !== marks.defaultVal) {
       setSliderNum(() => marks.defaultVal);
       props.getChild(marks.defaultVal);
@@ -107,8 +116,8 @@ export default function Item(props) {
       {marks ? (
         <div className="item__marks">{showSlider(marks)}</div>
       ) : (
-          <div className="item__btns">{showBtns(null)}</div>
-        )}
+        <div className="item__btns">{showBtns(null)}</div>
+      )}
     </div>
   );
 }

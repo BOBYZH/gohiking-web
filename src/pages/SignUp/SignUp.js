@@ -1,27 +1,18 @@
 import Button from '@material-ui/core/Button'
-import Page from 'material-ui-shell/lib/containers/Page'
-import Paper from '@material-ui/core/Paper'
-import React, { useState, useRef, useLayoutEffect } from 'react'
-import TextField from '@material-ui/core/TextField'
+import React, { useRef } from 'react'
 import Input from '@material-ui/core/Input'
-import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import { useAuth } from 'base-shell/lib/providers/Auth'
-import { useHistory, Link } from 'react-router-dom'
-import { useIntl } from 'react-intl'
-import { useMenu } from 'material-ui-shell/lib/providers/Menu'
-import axios from 'axios'
+import { Link, useHistory } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { DateRange } from '@material-ui/icons'
-import * as Yup from 'yup';
 
 
 const useStyles = makeStyles({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    height: `100%`,
+    width: '100%',
+    height: '100%',
   },
   arrow: {
     margin: '40px 371px 0px 16px',
@@ -85,7 +76,7 @@ const useStyles = makeStyles({
   privacyInfo: {
     width: '-webkit-fill-available',
     height: '45px',
-    margin: '16px 0px 0px',
+    margin: '75px 0px 0px',
     fontFamily: 'NotoSansCJKtc',
     fontSize: '14px',
     fontWeight: 'normal',
@@ -111,6 +102,13 @@ const SignUp = () => {
   const password = useRef({});
   password.current = watch("password", "");
   const axios = require('axios');
+  const [serverState, setServerState] = React.useState();
+  const handleServerResponse = (signup, msg) => {
+    setServerState({
+      signup,
+      msg
+    });
+  };
   let responsedJSON;
 
   // API POST
@@ -118,15 +116,18 @@ const SignUp = () => {
     console.log(data);
     await axios.post('https://gohiking-server.herokuapp.com/api/register', data)
     .then(function (response) {
+      const now = new Date()
       console.log('correct');
-      const { token } = response.data;
       responsedJSON = response.data
-      localStorage.setItem('token', token)
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('userId', response.data.userId)
+      localStorage.setItem('expireTime', now.getTime() + response.data.expireTime)
       history.push("/register0_1");
     })
     .catch(function (error) {
       console.log('error');
       responsedJSON = error.response.data;
+      handleServerResponse(false, responsedJSON.error)
     })
     .finally(function () {
       console.log(responsedJSON);
@@ -157,10 +158,15 @@ const SignUp = () => {
                                                                 validate: value =>
                                                                 value === password.current || "密碼不一致！" 
                                                                 })} />
-        <div className={classes.errorInfo}>{errors.password_repeat && <p>{errors.password_repeat.message}</p>}</div>
+        <div className={classes.errorInfo}>
+          {errors.password_repeat && <p>{errors.password_repeat.message}</p>}
+          {serverState && (
+          <div className={classes.errorInfo}>{serverState.msg}</div>
+          )}
+        </div>
         <div className={classes.privacyInfo}>使用這個應用程式前，請先詳閱「Go Hiking」的
-        《<span style={{ color: '#007aff' }}>隱私權政策</span>》及《<span style={{ color: '#007aff' }}>服務條款</span>》
-      </div>
+        《<Link to="/privacyPolicy" style={{ color: '#007aff' }}>隱私權政策</Link>》及《<Link to="/aboutUs" style={{ color: '#007aff' }}>服務條款</Link>》
+        </div>
         
         <Button
           type="submit"

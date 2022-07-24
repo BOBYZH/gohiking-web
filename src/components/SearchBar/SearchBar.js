@@ -1,27 +1,27 @@
-import React,{useState} from "react";
-import {Link} from 'react-router-dom';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import MicIcon from "@material-ui/icons/Mic";
 import SearchIcon from "@material-ui/icons/Search";
 import IconButton from "@material-ui/core/IconButton";
 import { TextField } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   iconButton: {
     padding: 0,
     minHeight: 0,
     minWidth: 0,
-    margin: 0,
+    margin: 0
   },
   textField: {
     backgroundColor: "#e5e5ea",
-    width: "100%",
+    width: "100%"
   },
   searchIcon: {
     marginLeft: "16px",
     marginTop: "12px",
     marginBottom: "12px",
-    marginRight: "16px",
+    marginRight: "16px"
   },
   button: {
     padding: 0,
@@ -29,52 +29,57 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 0,
     marginRight: "19px",
     marginTop: "12px",
-    marginBottom: "12px",
-  },
+    marginBottom: "12px"
+  }
 }));
 
 function SearchBar(props) {
+  const history = useHistory();
   const classes = useStyles();
-  const defaultkw= props.props;
+  const defaultkw = props.props;
   console.log(defaultkw);
-  const[value,setValue]=useState("");
-  const handleInpuChange = () => (event)=>{
-    setValue(event.target.value)
+  const [value, setValue] = useState("");
+  const handleInpuChange = () => event => {
+    setValue(event.target.value);
   };
   return (
     <TextField
       className={classes.textField}
-      defaultValue={defaultkw===undefined?'':defaultkw}
+      defaultValue={defaultkw === undefined ? "" : defaultkw}
       placeholder="搜尋步道"
       margin={"normal"}
       size="small"
       onChange={
         // (event) => {
         // console.log(event.target.value)}
-        handleInpuChange({value})
+        handleInpuChange({ value })
       }
       InputProps={{
         startAdornment: (
-          <Link to={{
-            pathname:'/searchResult',
-            aboutProps:{name:value}
-          }}><IconButton
-          className={classes.iconButton}
-          onClick={() => {
-            // console.log({value});
-            localStorage.setItem( 'kw', value);
-          }}
-        >
-          <SearchIcon className={classes.searchIcon} />
-        </IconButton></Link>
-          
+          // <Link to={{
+          //   pathname:'/searchResult',
+          //   aboutProps:{name:value}
+          // }}>
+          <IconButton
+            className={classes.iconButton}
+            onClick={() => {
+              localStorage.setItem("kw", value);
+              history.push({
+                pathname: "/searchResult",
+                state: { name: value }
+              });
+            }}
+          >
+            <SearchIcon className={classes.searchIcon} />
+          </IconButton>
+          // {/* </Link> */}
         ),
         endAdornment: (
           <IconButton className={classes.button}>
             <MicIcon />
           </IconButton>
         ),
-        disableUnderline: true,
+        disableUnderline: true
       }}
     />
   );

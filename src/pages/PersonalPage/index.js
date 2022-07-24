@@ -1,19 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
-import {
-  makeStyles,
-  createMuiTheme,
-  ThemeProvider,
-  withStyles
-} from "@material-ui/core/styles";
+import React from "react";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   Avatar,
   Backdrop,
-  Button,
-  Dialog,
+  CircularProgress,
   Divider,
-  Grid,
-  InputLabel,
-  MenuItem
+  Grid
 } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import AppBar from "@material-ui/core/AppBar";
@@ -24,20 +16,9 @@ import EditIcon from "@material-ui/icons/Edit";
 import TextField from "@material-ui/core/TextField";
 import AvatarUploadDialog from "components/Dialog/AvatarUploadDialog";
 import AvatarUploadDialogLogic from "components/Dialog/AvatarUploadDialogLogic";
-import Select from "@material-ui/core/Select";
-import { countryInfo } from "../../data/countryInfo";
 import PersonalPageLogic from "./personalPageLogic";
 import { useHistory } from "react-router";
-import ClipLoader from "react-spinners/ClipLoader";
-
-const lightTheme = createMuiTheme({
-  palette: {
-    type: "light",
-    primary: {
-      main: "#00d04c"
-    }
-  }
-});
+import Helper from "helper/helper";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,6 +56,10 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     width: "100%"
   },
+  textfield_country_code: {
+    marginTop: 8,
+    marginBottom: 8
+  },
   textLabel: {
     paddingLeft: 15
   },
@@ -111,10 +96,23 @@ const useStyles = makeStyles(theme => ({
     color: "#fff"
   }
 }));
+const DisabledTextField = withStyles({
+  root: {
+    "& .MuiInputBase-root.Mui-disabled": {
+      color: "rgba(0, 0, 0, 1)"
+    },
+    "& .MuiInput-underline.Mui-disabled:before": {
+      borderBottom: "solid 1px rgba(0, 0, 0, 0.12)"
+    }
+  }
+})(TextField);
 
 function PersonalPage(props) {
+  const helper = Helper();
   const history = useHistory();
-
+  if (!helper.verifyToken()) {
+    history.push({ pathname: "/signin" });
+  }
   const Logix = PersonalPageLogic();
   const croppedImage =
     props.location.state === undefined
@@ -140,9 +138,9 @@ function PersonalPage(props) {
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.menuButton}
             color="inherit"
-            aria-label="menu"
+            aria-label="back"
+            onClick={() => history.push({ pathname: "/home" })}
           >
             <ArrowBackIcon />
           </IconButton>
@@ -182,24 +180,16 @@ function PersonalPage(props) {
           <Grid item xs={12}>
             <div className={classes.avatarContainer}>
               <Avatar
-                // alt="Profile Picture"
                 src={
-                  croppedImage == null ? Logix.personalInfo.image : croppedImage
+                  croppedImage == null
+                    ? Logix.personalInfo.users
+                      ? Logix.personalInfo.users.image
+                      : ""
+                    : croppedImage
                 }
                 className={classes.avatar}
+                alt=""
               />
-              {/* {isReadonly ? (
-                <></>
-              ) : (
-                <div
-                  class={classes.avatarOverlay}
-                  onClick={() => {
-                    openDialog();
-                  }}
-                >
-                  更換
-                </div>
-              )} */}
             </div>
           </Grid>
           <Grid
@@ -215,15 +205,15 @@ function PersonalPage(props) {
               <>
                 <Grid item xs={12}>
                   <Typography variant="h6" style={{ color: "#232323" }}>
-                    {Logix.personalInfo.name
-                      ? Logix.personalInfo.name
+                    {Logix.personalInfo.users
+                      ? Logix.personalInfo.users.name
                       : "loading"}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="h7" style={{ color: "#919191" }}>
-                    {Logix.personalInfo.email
-                      ? Logix.personalInfo.email
+                    {Logix.personalInfo.users
+                      ? Logix.personalInfo.users.email
                       : "loading"}
                   </Typography>
                 </Grid>
@@ -271,13 +261,22 @@ function PersonalPage(props) {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <TextField
+              <DisabledTextField
+                disabled={true}
                 id="standard-basic"
                 placeholder="姓名"
                 className={classes.textfield}
                 inputProps={{
-                  value: Logix.personalInfo.name,
-                  readOnly: true
+                  value:
+                    Logix.personalInfo.users === undefined
+                      ? ""
+                      : Logix.personalInfo.users.name,
+                  underline: {
+                    color: "red",
+                    "&::before": {
+                      borderBottom: "2px solid red"
+                    }
+                  }
                 }}
               />
             </Grid>
@@ -287,12 +286,16 @@ function PersonalPage(props) {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <TextField
+              <DisabledTextField
+                disabled={true}
                 id="standard-basic"
                 placeholder="性別"
                 className={classes.textfield}
                 inputProps={{
-                  value: Logix.personalInfo.gender,
+                  value:
+                    Logix.personalInfo.users === undefined
+                      ? ""
+                      : Logix.personalInfo.users.gender?"男":"女",
                   readOnly: true
                 }}
               />
@@ -304,32 +307,35 @@ function PersonalPage(props) {
             </Grid>
             <Grid item xs={9}>
               <div className={classes.textfield}>
-                <Select
+                <DisabledTextField
+                  disabled={true}
+                  placeholder="國碼"
                   labelId="country-code"
                   id="country-code"
                   style={{ width: "30%" }}
-                  className={classes.textfield}
+                  className={classes.textfield_country_code}
                   inputProps={{
-                    readOnly: true
+                    value:
+                      Logix.personalInfo.countrycodes === undefined
+                        ? ""
+                        : Logix.personalInfo.users.country_code_id === null
+                        ? ""
+                        : Logix.personalInfo.countrycodes[
+                            Logix.personalInfo.users.country_code_id - 1
+                          ].phone_code
                   }}
-                >
-                  {countryInfo.map(info => (
-                    <MenuItem
-                      key={info.countryCode + info.countryName}
-                      value={info.phoneCode}
-                    >
-                      {info.phoneCode}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <TextField
+                />
+                <DisabledTextField
+                  disabled={true}
                   id="standard-basic"
                   placeholder="手機"
                   style={{ width: "70%" }}
                   className={classes.textfield_phone}
                   inputProps={{
-                    value: Logix.personalInfo.phone_number,
-                    readOnly: true
+                    value:
+                      Logix.personalInfo.users === undefined
+                        ? ""
+                        : Logix.personalInfo.users.phone_number
                   }}
                 />
               </div>
@@ -340,7 +346,8 @@ function PersonalPage(props) {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <TextField
+              <DisabledTextField
+                disabled={true}
                 id="standard-basic"
                 placeholder="生日"
                 className={classes.textfield}
@@ -349,8 +356,10 @@ function PersonalPage(props) {
                   shrink: true
                 }}
                 inputProps={{
-                  value: Logix.personalInfo.birth,
-                  readOnly: true
+                  value:
+                    Logix.personalInfo.users === undefined
+                      ? ""
+                      : Logix.personalInfo.users.birth
                 }}
               />
             </Grid>
@@ -360,15 +369,18 @@ function PersonalPage(props) {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <TextField
+              <DisabledTextField
+                disabled={true}
                 id="standard-basic"
                 placeholder="居住地"
                 className={classes.textfield}
                 inputProps={{
-                  value: Logix.personalInfo.county
-                    ? Logix.personalInfo.county.name
-                    : "",
-                  readOnly: true
+                  value:
+                    Logix.personalInfo.users === undefined
+                      ? ""
+                      : Logix.personalInfo.users.county
+                      ? Logix.personalInfo.users.county.name
+                      : ""
                 }}
               />
             </Grid>
@@ -382,7 +394,7 @@ function PersonalPage(props) {
         inputRef={inputRef}
       />
       <Backdrop className={classes.backdrop} open={Logix.isLoading}>
-        <ClipLoader color={"#36CAAD"} loading={Logix.isLoading} size={150} />
+        <CircularProgress />
       </Backdrop>
     </div>
   );

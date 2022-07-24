@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 
-
+.env
 # testing
 /coverage
 
@@ -28,3 +28,4 @@ firebase-debug.log*
 .eslintcache
 
 package-lock.json
+.env
