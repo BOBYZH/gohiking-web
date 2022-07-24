@@ -177,7 +177,7 @@ export default function ImgMediaCard() {
       'token': response.tokenId,
     }
     console.log('data: ', data);
-    await axios.post('https://staging-server.gohiking.app/api/auth/social/callback', data).then(function(response1){
+    await axios.post('https://gohiking-server.herokuapp.com/api/auth/social/callback', data).then(function(response1){
       console.log('====second response==== ',response1);
       console.log('====second response token==== ', response1.data.token);
       localStorage.setItem('token', response1.data.token);
@@ -241,7 +241,7 @@ const signInWithGoogle = () =>{
       'token': response.accessToken,
     }
     console.log('====data====',data);
-    await axios.post('https://staging-server.gohiking.app/api/auth/social/callback', data).then(function(response2){
+    await axios.post('https://gohiking-server.herokuapp.com/api/auth/social/callback', data).then(function(response2){
       console.log('====second response==== ', response2);
       console.log('====second response token==== ', response2.data.token);
       localStorage.setItem('token', response2.data.token);
@@ -332,12 +332,12 @@ const signInWithFacebook = () =>{
           // Handle Errors here.
           console.log('error message:  ', error.message);
         });
-        // var headers = {"Access-Control-Allow-Origin": "https://staging-server.gohiking.app:443"} //#####
+        // var headers = {"Access-Control-Allow-Origin": "https://gohiking-server.herokuapp.com:443"} //#####
     }
 
     const signInWithSocialChangePage = async() =>{ //#####
       console.log('========final data_apple===========', socialData);
-      await axios.post('https://staging-server.gohiking.app/api/auth/social/callback', socialData).then(function(response3){
+      await axios.post('https://gohiking-server.herokuapp.com/api/auth/social/callback', socialData).then(function(response3){
           console.log("====post success====",response3);
           console.log('====second response token====', response3.data.token);
           localStorage.setItem('token', response3.data.token);

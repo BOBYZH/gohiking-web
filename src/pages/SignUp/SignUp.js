@@ -114,7 +114,7 @@ const SignUp = () => {
   // API POST
   const onSubmit = async (data) => {
     console.log(data);
-    await axios.post('https://staging-server.gohiking.app/api/register', data)
+    await axios.post('https://gohiking-server.herokuapp.com/api/register', data)
     .then(function (response) {
       const now = new Date()
       console.log('correct');

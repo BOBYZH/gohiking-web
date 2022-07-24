@@ -188,7 +188,7 @@ export default function SignIn() {
   const onSubmit = async (data) => {
     data = testOuputObj;
     if (gendervalidate || phoneRegionvalidate || countyValidate || dateValidate) {
-      await axios.post('https://staging-server.gohiking.app/api/profile', data, { headers })
+      await axios.post('https://gohiking-server.herokuapp.com/api/profile', data, { headers })
         .then(function (response) {
           console.log('correct');
           responsedJSON = response.data;

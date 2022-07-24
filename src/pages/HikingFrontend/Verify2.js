@@ -46,7 +46,7 @@ const bottomBoard = createMuiTheme({
 });
 
 const api = axios.create({
-  baseURL: "https://staging-server.gohiking.app/",
+  baseURL: "https://gohiking-server.herokuapp.com/",
   // baseURL: "https://go-hiking-backend-laravel.herokuapp.com/",
 });
 

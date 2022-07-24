@@ -31,7 +31,7 @@ const Attraction = (props) => {
     const trail_id = props.location.state.trail_id;
     //let uid = localStorage.getItem("userId");
     const initial = async () => {
-    await axios.get('https://staging-server.gohiking.app/api/announcement/'+ trail_id)
+    await axios.get('https://gohiking-server.herokuapp.com/api/announcement/'+ trail_id)
         .then((response) => {
             setAnnouncement(response.data);
         });

@@ -148,22 +148,22 @@ function NearByPathway() {
 
     //call trails and set trails data in search and id is category
     const initial = async () => {
-        await axios.get('https://staging-server.gohiking.app/api/classification/1&uuid=1')
+        await axios.get('https://gohiking-server.herokuapp.com/api/classification/1&uuid=1')
             .then((response) => {
                 //console.log(response.data.trails);
                 setSearchMaple(response.data.trails);
             });
-        await axios.get('https://staging-server.gohiking.app/api/classification/2&uuid=1')
+        await axios.get('https://gohiking-server.herokuapp.com/api/classification/2&uuid=1')
             .then((response) => {
                 //console.log(response.data.trails);
                 setSearchChallenge(response.data.trails);
             });
-        await axios.get('https://staging-server.gohiking.app/api/classification/3&uuid=1')
+        await axios.get('https://gohiking-server.herokuapp.com/api/classification/3&uuid=1')
             .then((response) => {
                 //console.log(response.data.trails);
                 setSearchSpring(response.data.trails);
             });
-        await axios.get('https://staging-server.gohiking.app/api/classification/4&uuid=1')
+        await axios.get('https://gohiking-server.herokuapp.com/api/classification/4&uuid=1')
             .then((response) => {
                 //console.log(response.data.trails);
                 setSearchFamily(response.data.trails);
