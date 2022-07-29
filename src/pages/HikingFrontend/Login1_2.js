@@ -180,7 +180,7 @@ export default function SignIn() {
           {errors.email && "請輸入電子信箱"}
         </Typography>
         <ReCAPTCHA
-          sitekey="6LdFiEYaAAAAAHcdu_AyzIktEbqdTz7pXmNBC__W"
+          sitekey="6LeXWS8hAAAAAJY-E3bjYowKoBR-E2Xn-b2M0sch"
           onChange={onChange}
         />
         {errormassage ?
