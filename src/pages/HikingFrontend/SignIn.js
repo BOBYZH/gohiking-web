@@ -390,8 +390,8 @@ const signInWithFacebook = () =>{
             onFailure={responseGoogle}
             cookiePolicy={"single_host_origin"}
           /> */}
-          <ColorButton1 variant = "contained" onClick = {signInWithGoogle} startIcon={<img src = {googleIcon} alt = 'google_icon' style={{height: '18px', weight: '18px'}}/>}>
-            透過Google登入
+          <ColorButton1 variant = "contained" onClick = {signInWithGoogle} startIcon={<img src = {googleIcon} alt = 'google_icon' style={{height: '18px', weight: '18px'}}/>} disabled={(window.location.host !== "localhost:3000")? true : false}>
+            透過Google登入(限開發環境)
           </ColorButton1>
           {/* <FacebookLogin
             appId="1311202525878900"
@@ -403,11 +403,11 @@ const signInWithFacebook = () =>{
             textButton= "透過FACEBOOK登入"
             icon = {<FacebookIcon style={{color: "#ffffff", marginRight: "5px",fontSize : "24px", paddingBottom: "4px"}}/>}
             />           */}
-          <ColorButton2 variant = "contained" onClick = {signInWithFacebook} startIcon={<FacebookIcon style={{color: "#ffffff"}}/>}>
-            透過FACEBOOK登入
+          <ColorButton2 variant = "contained" onClick = {signInWithFacebook} startIcon={<FacebookIcon style={{color: "#ffffff"}}/>} disabled={(window.location.host !== "localhost:3000")? true : false}>
+            透過FACEBOOK登入(限開發環境)
           </ColorButton2>  
-          <ColorButton3 variant = "contained" onClick = {signInWithApple} startIcon={<AppleIcon style={{color: "#ffffff"}}/>}>
-            透過Apple ID登入
+          <ColorButton3 variant = "contained" onClick = {signInWithApple} startIcon={<AppleIcon style={{color: "#ffffff"}}/>} disabled={(window.location.host !== "localhost:3000")? true : false}>
+            透過Apple ID登入(限開發環境)
           </ColorButton3>
           <ColorButton4 variant = "contained" onClick = {GoToLogin1_1} startIcon={<MailOutlineIcon style={{color: "#000000"}}/>}>
             透過Mail登入
