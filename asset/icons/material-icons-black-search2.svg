@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <defs>
+        <filter id="nysthrosza">
+            <feColorMatrix in="SourceGraphic" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <g filter="url(#nysthrosza)" transform="translate(-371 -16)">
+            <g>
+                <path fill="#FFF" d="M15.867 9.68h-.818l-.284.282c1.004 1.17 1.614 2.687 1.614 4.35 0 3.694-2.995 6.689-6.69 6.689-3.694 0-6.689-2.995-6.689-6.69 0-3.694 2.995-6.689 6.69-6.689 1.662 0 3.178.61 4.348 1.612l.284-.282v-.815L19.466 3 21 4.534 15.867 9.68zm-6.177 0c-2.559 0-4.632 2.073-4.632 4.631 0 2.558 2.073 4.632 4.632 4.632 2.557 0 4.63-2.074 4.63-4.632s-2.073-4.63-4.63-4.63z" transform="translate(371 16) matrix(1 0 0 -1 0 24.001)"/>
+            </g>
+        </g>
+    </g>
+</svg>

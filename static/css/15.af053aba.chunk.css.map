@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/assets/css/slick.css"],"names":[],"mappings":"AAAA,YACI,UACJ,CAEA,eACI,YACJ,CAEA,6BACI,aAAc,CACd,WACJ","file":"15.af053aba.chunk.css","sourcesContent":[".slick-dots {\r\n    bottom: 5px;\r\n}\r\n\r\n.slick-dots li {\r\n    margin: 0 3px;\r\n}\r\n\r\n.slick-dots li button:before {\r\n    color: #c7c7cc;\r\n    opacity: .95;\r\n}"]}
